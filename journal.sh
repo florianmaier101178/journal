@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#TODO flo: year should be possible with 2022 and 22
-#TODO flo: month should also be possible with 1 and 01
-#TODO flo: day shoudl also be possible with 1 and 01
-
 function usage() {
     cat << EOF >&2
 Usage: $0 
@@ -53,14 +49,23 @@ function generateJournalEntry() {
 
 function handleYearArgument() {
     yearChoice="${1#*=}"
+    if [ ${#yearChoice} -eq 2 ]; then
+        yearChoice=20$yearChoice
+    fi
 }
 
 function handleMonthArgument() {
     monthChoice="${1#*=}"
+    if [ ${#monthChoice} -eq 1 ]; then
+        monthChoice=0$monthChoice
+    fi
 }
 
 function handleDayArgument() {
     dayChoice="${1#*=}"
+    if [ ${#dayChoice} -eq 1 ]; then
+        dayChoice=0$dayChoice
+    fi
 }
 
 # handle illegal number of arguments
