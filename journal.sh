@@ -77,13 +77,15 @@ fi
 
 # handle no argument passed into script, complete journal report piped to less
 if [ "$#" -eq 0 ]; then
-    find . -type f -name "*.txt" | sort -r | xargs cat | less
+    find . -type f -name "*.txt" | sort -r | \
+        xargs -d $'\n' sh -c 'for arg do cat "$arg"; printf "########################################################################################################################\n\n" ; done' _ | less
     exit 0
 fi
 
 # handle complete journal report piped to stdout
 if [ "$#" -eq 1 ] && [ "$1" == "--output" ]; then
-    find . -type f -name "*.txt" | sort -r | xargs cat   
+    find . -type f -name "*.txt" | sort -r | \
+        xargs -d $'\n' sh -c 'for arg do cat "$arg"; printf "########################################################################################################################\n\n" ; done' _ | less
     exit 0
 fi
 
