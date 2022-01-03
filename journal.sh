@@ -3,7 +3,9 @@
 function usage() {
     cat << EOF >&2
 Usage: $0 
-        -> complete journal
+        -> complete journal piped to less
+       $0 --output
+        -> complete journal piped to stdout
        $0 --generate
         -> generate journal entry for current day
        $0 [-y|--year]=<year>
@@ -73,8 +75,14 @@ if [ "$#" -gt 3 ]; then
     usage
 fi
 
-# handle no argument passed into script, complete journal report
+# handle no argument passed into script, complete journal report piped to less
 if [ "$#" -eq 0 ]; then
+    find . -type f -name "*.txt" | sort -r | xargs cat | less
+    exit 0
+fi
+
+# handle complete journal report piped to stdout
+if [ "$#" -eq 1 ] && [ "$1" == "--output" ]; then
     find . -type f -name "*.txt" | sort -r | xargs cat   
     exit 0
 fi
