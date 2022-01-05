@@ -6,6 +6,8 @@ Usage: $0
         -> complete journal piped to less
        $0 --books
         -> output read books to stdout
+       $0 --bookRecommendations
+        -> output book recommendations to stdout
        $0 --generate
         -> generate journal entry for current day
        $0 --output
@@ -92,6 +94,19 @@ if [ "$#" -eq 1 ] && [ "$1" == "--books" ]; then
     find . -type f -name "*.txt" | sort -r | \
         xargs cat |  grep --no-group-separator -A1 "book:" | \
         grep -v "book:" | sort | uniq
+
+    printf "\n"
+    exit 0
+fi
+
+# handle book recommendations report piped to stdout
+if [ "$#" -eq 1 ] && [ "$1" == "--bookRecommendations" ]; then
+    printf "book recommendations:\n"
+    printf "#####################\n\n"
+
+    find . -type f -name "*.txt" | sort -r | \
+        xargs cat |  grep --no-group-separator -A1 "book recommendation:" | \
+        grep -v "book recommendation:" | sort | uniq
 
     printf "\n"
     exit 0
