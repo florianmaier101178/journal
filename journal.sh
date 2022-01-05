@@ -4,10 +4,12 @@ function usage() {
     cat << EOF >&2
 Usage: $0 
         -> complete journal piped to less
-       $0 --output
-        -> complete journal piped to stdout
+       $0 --books
+        -> output read books to stdout
        $0 --generate
         -> generate journal entry for current day
+       $0 --output
+        -> complete journal piped to stdout
        $0 [-y|--year]=<year>
         -> journal for specific year
        $0 [-y|--year]=<year> [-m|--month]=<month>
@@ -82,10 +84,23 @@ if [ "$#" -eq 0 ]; then
     exit 0
 fi
 
+# handle read books report piped to stdout
+if [ "$#" -eq 1 ] && [ "$1" == "--books" ]; then
+    printf "read books:\n"
+    printf "###########\n\n"
+
+    find . -type f -name "*.txt" | sort -r | \
+        xargs cat |  grep --no-group-separator -A1 "book:" | \
+        grep -v "book:" | sort | uniq
+
+    printf "\n"
+    exit 0
+fi
+
 # handle complete journal report piped to stdout
 if [ "$#" -eq 1 ] && [ "$1" == "--output" ]; then
     find . -type f -name "*.txt" | sort -r | \
-        xargs -d $'\n' sh -c 'for arg do cat "$arg"; printf "########################################################################################################################\n\n" ; done' _ | less
+        xargs -d $'\n' sh -c 'for arg do cat "$arg"; printf "########################################################################################################################\n\n" ; done' _
     exit 0
 fi
 
