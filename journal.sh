@@ -12,6 +12,8 @@ Usage: $0
         -> generate journal entry for current day
        $0 --output
         -> complete journal piped to stdout
+       $0 --today
+        -> edit todays journal entry
        $0 [-y|--year]=<year>
         -> journal for specific year
        $0 [-y|--year]=<year> [-m|--month]=<month>
@@ -50,6 +52,21 @@ function generateJournalEntry() {
     printf "\n\n" >> $journalEntryForCurrentDay
     printf -- "- \n" >> $journalEntryForCurrentDay
     printf "\n" >> $journalEntryForCurrentDay
+    exit 0
+}
+
+function editTodaysJournalEntry() {
+    journalEntryYear="$(date +%Y)"
+    journalEntryMonth="$(date +%m)"
+    journalEntryCurrentMonthPath="./$journalEntryYear/$journalEntryMonth"
+    journalEntryForCurrentDay="$journalEntryCurrentMonthPath/$(date +%d).txt"
+
+    if [ ! -f $journalEntryForCurrentDay ]; then
+        echo "ATTENTION: journal entry for $(date +%d.%m.%Y) is not available, please generate it first"
+        exit 7
+    fi
+
+    vi $journalEntryForCurrentDay
     exit 0
 }
 
@@ -124,6 +141,11 @@ if [ "$#" -eq 1 ] && [ "$1" == "--generate" ]; then
     generateJournalEntry
 fi
 
+# handle argument --today
+if [ "$#" -eq 1 ] && [ "$1" == "--today" ]; then
+    editTodaysJournalEntry
+fi
+
 # handle arguments passed into script, different journal reports
 if [ "$#" -gt 0 ]; then
     while [ $# -gt 0 ]; do
@@ -161,7 +183,7 @@ if [ -n $yearChoice ] && [ -z $monthChoice ] && [ -z $dayChoice ]; then
         exit 0
     else
         printf "no journal entry for year: $yearChoice\n\n"
-        exit 3
+        exit 4
     fi
 fi
 
@@ -173,7 +195,7 @@ if [ -n $yearChoice ] && [ -n $monthChoice ] && [ -z $dayChoice ]; then
         exit 0
     else
         printf "no journal entry for year: $yearChoice - month: $monthChoice\n\n"
-        exit 4
+        exit 5
     fi
 fi
 
@@ -185,7 +207,7 @@ if [ -n $yearChoice ] && [ -n $monthChoice ] && [ -n $dayChoice ]; then
         exit 0
     else 
         printf "no journal entry for year: $yearChoice - month: $monthChoice - day: $dayChoice\n\n"
-        exit 5
+        exit 6
     fi
 fi
 
