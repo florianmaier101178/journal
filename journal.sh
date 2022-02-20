@@ -14,6 +14,8 @@ Usage: $0
         -> complete journal piped to stdout
        $0 --today
         -> edit todays journal entry
+       $0 --lastentry
+        -> edit last journal entry
        $0 [-y|--year]=<year>
         -> journal for specific year
        $0 [-y|--year]=<year> [-m|--month]=<month>
@@ -67,6 +69,12 @@ function editTodaysJournalEntry() {
     fi
 
     nvim $journalEntryForCurrentDay
+    exit 0
+}
+
+# this opens the last entry before today in an editor
+function editJournalLastEntry() {
+    nvim $(tree -if . | grep txt | sort -r | head -n 2 | sed '1d')
     exit 0
 }
 
@@ -144,6 +152,11 @@ fi
 # handle argument --today
 if [ "$#" -eq 1 ] && [ "$1" == "--today" ]; then
     editTodaysJournalEntry
+fi
+
+# handle argument --lastentry
+if [ "$#" -eq 1 ] && [ "$1" == "--lastentry" ]; then
+    editJournalLastEntry
 fi
 
 # handle arguments passed into script, different journal reports
