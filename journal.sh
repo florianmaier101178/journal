@@ -66,7 +66,7 @@ function editTodaysJournalEntry() {
         exit 7
     fi
 
-    vi $journalEntryForCurrentDay
+    nvim $journalEntryForCurrentDay
     exit 0
 }
 
